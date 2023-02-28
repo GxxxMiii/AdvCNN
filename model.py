@@ -24,10 +24,42 @@ class NeuralNetwork(nn.Module):
         return logits
 
 
-def init_model():
+class CNN(nn.Module):
+    def __init__(self):
+        super(CNN, self).__init__()
+        self.conv1 = nn.Sequential(
+            nn.Conv2d(in_channels=1, out_channels=32, kernel_size=(5, 5), stride=(1, 1), padding=2),
+            nn.ReLU(),
+            nn.MaxPool2d(kernel_size=2, stride=2)
+        )
+        self.conv2 = nn.Sequential(
+            nn.Conv2d(in_channels=32, out_channels=64, kernel_size=(5, 5), stride=(1, 1), padding=2),
+            nn.ReLU(),
+            nn.MaxPool2d(kernel_size=2, stride=2)
+        )
+        self.fc = nn.Sequential(
+            nn.Linear(7*7*64, 1024),
+            nn.ReLU()
+        )
+        self.softmax = nn.Sequential(
+            nn.Linear(1024, 10),
+            nn.Softmax(dim=1)
+        )
+
+    def forward(self, x):
+        x = self.conv1(x)
+        x = self.conv2(x)
+        x = x.view(x.size()[0], -1)
+        x = self.fc(x)
+        logits = self.softmax(x)
+
+        return logits
+
+
+def init_data():
     """
 
-    :return: model, train_dataloader, test_dataloader, device
+    :return: train_dataloader, test_dataloader, device
     """
     # Download training data from open datasets.
     training_data = datasets.MNIST(root="data", train=True, download=True, transform=ToTensor(),)
@@ -45,9 +77,7 @@ def init_model():
     device = "cuda" if torch.cuda.is_available() else "cpu"
     print(f"Using {device} device")
 
-    model = NeuralNetwork().to(device)
-    # print(model)
-    return model, train_dataloader, test_dataloader, device
+    return train_dataloader, test_dataloader, device
 
 
 def train(dataloader, model, loss_fn, optimizer, device):
@@ -70,22 +100,6 @@ def train(dataloader, model, loss_fn, optimizer, device):
             print(f"loss: {loss:>7f}  [{current:>5d}/{size:>5d}]")
 
 
-def test(dataloader, model, loss_fn, device):
-    size = len(dataloader.dataset)
-    num_batches = len(dataloader)
-    model.eval()
-    test_loss, correct = 0, 0
-    with torch.no_grad():
-        for X, y in dataloader:
-            X, y = X.to(device), y.to(device)
-            pred = model(X)
-            test_loss += loss_fn(pred, y).item()
-            correct += (pred.argmax(1) == y).type(torch.float).sum().item()
-    test_loss /= num_batches
-    correct /= size
-    print(f"Test Error: \n Accuracy: {(100*correct):>0.1f}%, Avg loss: {test_loss:>8f} \n")
-
-
 def test(dataloader, model, loss_fn):
     size = len(dataloader.dataset)
     num_batches = len(dataloader)
@@ -99,27 +113,37 @@ def test(dataloader, model, loss_fn):
             correct += (pred.argmax(1) == y).type(torch.float).sum().item()
     test_loss /= num_batches
     correct /= size
-    print(f"Test Error: \n Accuracy: {(100*correct):>0.1f}%, Avg loss: {test_loss:>8f} \n")
+    print(f"Test Error: \n Accuracy: {(100*correct):>0.3f}%, Avg loss: {test_loss:>8f} \n")
 
 
 if __name__ == '__main__':
 
-    model, train_dataloader, test_dataloader, device = init_model()
+    learning_rate = 0.0005
+    train_dataloader, test_dataloader, device = init_data()
+    cnn = CNN().to(device)
 
     loss_fn = nn.CrossEntropyLoss()
-    optimizer = torch.optim.SGD(model.parameters(), lr=1e-3)
+    optimizer = torch.optim.Adam(cnn.parameters(), lr=learning_rate)
 
-    epochs = 5
-    for t in range(epochs):
-        print(f"Epoch {t + 1}\n-------------------------------")
-        train(train_dataloader, model, loss_fn, optimizer, device)
-        test(test_dataloader, model, loss_fn)
+    # epochs = 20
+    # for t in range(epochs):
+    #     print(f"Epoch {t + 1}\n-------------------------------")
+    #     train(train_dataloader, cnn, loss_fn, optimizer, device)
+    #     test(test_dataloader, cnn, loss_fn)
+    # print("Done!")
+    #
+    # # save model
+    # torch.save(cnn.state_dict(), "clean_CNN.pth")
+    # print("Saved PyTorch Model State to clean_CNN.pth")
+
+    # load model
+    clean_cnn = CNN()
+    # print(clean_cnn)
+    clean_cnn.load_state_dict(torch.load("clean_CNN.pth"))
+    print("Load Pytorch Model from clean_CNN.pth")
+
+    test(test_dataloader, clean_cnn, loss_fn)
     print("Done!")
 
-    torch.save(model.state_dict(), "model.pth")
-    print("Saved PyTorch Model State to model.pth")
-
-    model = NeuralNetwork()
-    model.load_state_dict(torch.load("model.pth"))
 
 
