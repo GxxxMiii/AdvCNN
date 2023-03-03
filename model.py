@@ -41,17 +41,12 @@ class CNN(nn.Module):
             nn.Linear(7*7*64, 1024),
             nn.ReLU()
         )
-        self.softmax = nn.Sequential(
-            nn.Linear(1024, 10),
-            nn.Softmax(dim=1)
-        )
 
     def forward(self, x):
         x = self.conv1(x)
         x = self.conv2(x)
         x = x.view(x.size()[0], -1)
-        x = self.fc(x)
-        logits = self.softmax(x)
+        logits = self.fc(x)
 
         return logits
 
@@ -118,14 +113,14 @@ def test(dataloader, model, loss_fn):
 
 if __name__ == '__main__':
 
-    learning_rate = 0.0005
+    learning_rate = 0.001
     train_dataloader, test_dataloader, device = init_data()
     cnn = CNN().to(device)
 
     loss_fn = nn.CrossEntropyLoss()
     optimizer = torch.optim.Adam(cnn.parameters(), lr=learning_rate)
 
-    # epochs = 20
+    # epochs = 25
     # for t in range(epochs):
     #     print(f"Epoch {t + 1}\n-------------------------------")
     #     train(train_dataloader, cnn, loss_fn, optimizer, device)
@@ -144,6 +139,3 @@ if __name__ == '__main__':
 
     test(test_dataloader, clean_cnn, loss_fn)
     print("Done!")
-
-
-
