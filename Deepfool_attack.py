@@ -30,11 +30,12 @@ if __name__ == '__main__':
     attack = DeepFoolAttack(model=fmodel, criterion=criterion)
 
     image, label = foolbox.utils.samples(dataset='mnist', batchsize=1, index=random.randint(0, 10000), bounds=(0, 1))
+    image = image[np.newaxis, :]
     print('true label: ', label)
-    pre_label = clean_cnn(torch.tensor(image[np.newaxis, :]).to(device))
+    pre_label = clean_cnn(torch.tensor(image).to(device))
     print('prediction label: ', np.argmax(pre_label.detach().numpy()))
     adversarial = attack(inputs=image, labels=label)
-    adv_label = clean_cnn(torch.tensor(adversarial[np.newaxis, :]).to(device))
+    adv_label = clean_cnn(torch.tensor(adversarial).to(device))
     print('adv prediction label: ', np.argmax(adv_label.detach().numpy()))
 
     # plot the example
