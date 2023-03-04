@@ -5,7 +5,7 @@ import random
 import matplotlib.pyplot as plt
 from matplotlib import use as mpl_use
 from foolbox.models import PyTorchModel
-from foolbox.v1.attacks import GradientSignAttack
+from foolbox.attacks import DeepFoolAttack
 from foolbox.criteria import Misclassification
 from model import CNN
 
@@ -25,17 +25,15 @@ if __name__ == '__main__':
     # turn into foolbox model
     fmodel = PyTorchModel(model=clean_cnn, bounds=(0, 1), num_classes=10)
 
-    # FGSM attack
+    # Deepfool attack
     criterion = Misclassification()
-    attack = GradientSignAttack(model=fmodel, criterion=criterion)
+    attack = DeepFoolAttack(model=fmodel, criterion=criterion)
 
-    image, label = foolbox.utils.samples(dataset='mnist', batchsize=1, data_format='channels_last', index=random.randint(0, 10000), bounds=(0, 1))
+    image, label = foolbox.utils.samples(dataset='mnist', batchsize=1, index=random.randint(0, 10000), bounds=(0, 1))
     print('true label: ', label)
-    print(image.shape)
     pre_label = clean_cnn(torch.tensor(image[np.newaxis, :]).to(device))
     print('prediction label: ', np.argmax(pre_label.detach().numpy()))
-    adversarial = attack(input_or_adv=image, label=label)
-    print('here')
+    adversarial = attack(inputs=image, labels=label)
     adv_label = clean_cnn(torch.tensor(adversarial[np.newaxis, :]).to(device))
     print('adv prediction label: ', np.argmax(adv_label.detach().numpy()))
 
@@ -55,6 +53,6 @@ if __name__ == '__main__':
     adversarial = adversarial.reshape(28, 28)
     plt.imshow(adversarial, cmap='gray')
 
-    plt.savefig('pics/FGSM_adv.png')
+    plt.savefig('pics/Deepfool_adv.png')
 
     print("Done!")
