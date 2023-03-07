@@ -16,10 +16,5 @@ def print_hi(name):
 # Press the green button in the gutter to run the script.
 if __name__ == '__main__':
 
-    model = torchvision.models.resnet18(weights=ResNet18_Weights.DEFAULT).eval()
-    processing = dict(mean=[0.485, 0.456, 0.406], std=[0.229, 0.224, 0.225], axis=-3)
-    bounds = (0, 1)
-    fmodel = fb.PyTorchModel(model, bounds=bounds)
-
-    print(fmodel.bounds)
+    print_hi('AdvCNN')
 

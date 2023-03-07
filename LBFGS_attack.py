@@ -6,7 +6,7 @@ import matplotlib.pyplot as plt
 from matplotlib import use as mpl_use
 from foolbox.models import PyTorchModel
 from foolbox.v1.attacks import LBFGSAttack
-from foolbox.criteria import TargetClassProbability
+from foolbox.criteria import TargetClass
 from model import CNN
 
 
@@ -27,10 +27,10 @@ if __name__ == '__main__':
 
     # L-BFGS attack
     target_class = 3
-    criterion = TargetClassProbability(target_class=target_class, p=0.9)
+    criterion = TargetClass(target_class=target_class)
     attack = LBFGSAttack(model=fmodel, criterion=criterion)
 
-    image, label = foolbox.utils.samples(dataset='mnist', batchsize=1, index=random.randint(0, 10000), bounds=(0, 1))
+    image, label = foolbox.utils.samples(dataset='mnist', batchsize=1, index=random.randint(0, 20), bounds=(0, 1))
     print('true label: ', label)
     pre_label = clean_cnn(torch.tensor(image[np.newaxis, :]).to(device))
     print('prediction label: ', np.argmax(pre_label.detach().numpy()))

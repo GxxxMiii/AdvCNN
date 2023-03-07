@@ -30,7 +30,7 @@ if __name__ == '__main__':
     criterion = TargetClass(target_class=target_class)
     attack = SaliencyMapAttack(model=fmodel, criterion=criterion)
 
-    image, label = foolbox.utils.samples(dataset='mnist', batchsize=1, index=random.randint(0, 10000), bounds=(0, 1))
+    image, label = foolbox.utils.samples(dataset='mnist', batchsize=1, index=random.randint(0, 20), bounds=(0, 1))
     print('true label: ', label)
     pre_label = clean_cnn(torch.tensor(image[np.newaxis, :]).to(device))
     print('prediction label: ', np.argmax(pre_label.detach().numpy()))

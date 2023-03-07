@@ -29,7 +29,7 @@ if __name__ == '__main__':
     criterion = Misclassification()
     attack = DeepFoolAttack(model=fmodel, criterion=criterion)
 
-    image, label = foolbox.utils.samples(dataset='mnist', batchsize=1, index=random.randint(0, 10000), bounds=(0, 1))
+    image, label = foolbox.utils.samples(dataset='mnist', batchsize=1, index=random.randint(0, 20), bounds=(0, 1))
     image = image[np.newaxis, :]
     print('true label: ', label)
     pre_label = clean_cnn(torch.tensor(image).to(device))
