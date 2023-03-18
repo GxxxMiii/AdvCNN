@@ -6,6 +6,7 @@ import matplotlib.pyplot as plt
 from matplotlib import use as mpl_use
 from foolbox.models import PyTorchModel
 from foolbox.attacks import GradientSignAttack
+from foolbox.attacks import base
 from foolbox.criteria import Misclassification
 from model import CNN
 
@@ -34,8 +35,11 @@ if __name__ == '__main__':
     print('true label: ', label)
     pre_label = clean_cnn(torch.tensor(image).to(device))
     print('prediction label: ', np.argmax(pre_label.detach().numpy()))
-    adversarial = attack(inputs=image, labels=label)
+    adversarial = attack(inputs=image, labels=label, epsilons=1, max_epsilon=0.1)
     adv_label = clean_cnn(torch.tensor(adversarial).to(device))
+    torch.set_printoptions(precision=4, sci_mode=False)
+    softmax = torch.nn.Softmax(dim=1)
+    print(softmax(adv_label.detach()))
     print('adv prediction label: ', np.argmax(adv_label.detach().numpy()))
 
     # plot the example

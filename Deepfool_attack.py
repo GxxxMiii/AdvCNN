@@ -36,6 +36,9 @@ if __name__ == '__main__':
     print('prediction label: ', np.argmax(pre_label.detach().numpy()))
     adversarial = attack(inputs=image, labels=label)
     adv_label = clean_cnn(torch.tensor(adversarial).to(device))
+    torch.set_printoptions(precision=4, sci_mode=False)
+    softmax = torch.nn.Softmax(dim=1)
+    print(softmax(adv_label).detach())
     print('adv prediction label: ', np.argmax(adv_label.detach().numpy()))
 
     # plot the example

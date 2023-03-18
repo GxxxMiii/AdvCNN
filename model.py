@@ -57,43 +57,6 @@ class CNN(nn.Module):
         return logits
 
 
-class LeNet(nn.Module):
-    def __init__(self):
-        super(LeNet, self).__init__()
-        self.conv1 = nn.Sequential(
-            nn.Conv2d(in_channels=1, out_channels=6, kernel_size=(5, 5)),
-            nn.ReLU(),
-            nn.MaxPool2d(kernel_size=2)
-        )
-        self.conv2 = nn.Sequential(
-            nn.Conv2d(in_channels=6, out_channels=16, kernel_size=(5, 5)),
-            nn.ReLU(),
-            nn.MaxPool2d(kernel_size=2)
-        )
-        self.fc1 = nn.Sequential(
-            nn.Linear(256, 120),
-            nn.ReLU()
-        )
-        self.fc2 = nn.Sequential(
-            nn.Linear(120, 84),
-            nn.ReLU()
-        )
-        self.fc3 = nn.Sequential(
-            nn.Linear(84, 10),
-            nn.ReLU()
-        )
-
-    def forward(self, x):
-        x = self.conv1(x)
-        x = self.conv2(x)
-        x = x.view(x.size()[0], -1)
-        x = self.fc1(x)
-        x = self.fc2(x)
-        logits = self.fc3(x)
-
-        return logits
-
-
 def init_data():
     """
 
@@ -105,7 +68,7 @@ def init_data():
     # Download test data from open datasets.
     test_data = datasets.MNIST(root="data", train=False, download=True, transform=ToTensor(),)
 
-    batch_size = 256
+    batch_size = 64
 
     # Create data loaders.
     train_dataloader = DataLoader(training_data, batch_size=batch_size, shuffle=True)
@@ -138,7 +101,7 @@ def train(dataloader, model, loss_fn, optimizer, device):
             print(f"loss: {loss:>7f}  [{current:>5d}/{size:>5d}]")
 
 
-def test(dataloader, model, loss_fn):
+def test(dataloader, model, loss_fn, device):
     size = len(dataloader.dataset)
     num_batches = len(dataloader)
     model.eval()
@@ -175,12 +138,12 @@ if __name__ == '__main__':
     # for t in range(epochs):
     #     print(f"Epoch {t + 1}\n-------------------------------")
     #     train(train_dataloader, cnn, loss_fn, optimizer, device)
-    #     test(test_dataloader, cnn, loss_fn)
+    #     test(test_dataloader, cnn, loss_fn, device)
     # print("Done!")
     #
     # # save model
     # torch.save(cnn.state_dict(), "clean_CNN.pth")
     # print("Saved PyTorch Model State to clean_CNN.pth")
 
-    test(test_dataloader, clean_cnn, loss_fn)
+    test(test_dataloader, clean_cnn, loss_fn, device)
     print("Done!")

@@ -4,17 +4,21 @@
 # Press Double ⇧ to search everywhere for classes, files, tool windows, actions, and settings.
 import torch
 import torchvision
-import foolbox as fb
-from torchvision.models import ResNet18_Weights
+from model import *
 
-
-def print_hi(name):
-    # Use a breakpoint in the code line below to debug your script.
-    print(f'Hi, {name}')  # Press ⌘F8 to toggle the breakpoint.
 
 
 # Press the green button in the gutter to run the script.
 if __name__ == '__main__':
 
-    print_hi('AdvCNN')
+    print('AdvCNN')
+
+    train_dataloader, test_dataloader, device = init_data()
+    loss_fn = nn.CrossEntropyLoss()
+
+    model = CNN()
+    model.load_state_dict(torch.load("distillation_teacher_CNN.pth"))
+    print("Load Pytorch Model")
+
+    test(test_dataloader, model, loss_fn, device)
 
