@@ -90,7 +90,8 @@ if __name__ == '__main__':
 
     epochs = 1
     distill(train_loader=train_dataloader, test_loader=test_dataloader, model=teacher_cnn, d_model=distilled_cnn,
-            epochs=epochs, loss_fn=loss_fn, teacher_optimizer=teacher_optimizer, distilled_optimizer=distilled_optimizer, device=device, temp=temp)
+            epochs=epochs, loss_fn=loss_fn, teacher_optimizer=teacher_optimizer, distilled_optimizer=distilled_optimizer,
+            device=device, temp=temp)
     print("Done!")
 
     # save model

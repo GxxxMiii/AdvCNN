@@ -2,14 +2,6 @@ from model import *
 import torch
 
 
-# Define regularization function
-def l1_regularization(model, lmbda):
-    reg_loss = 0
-    for param in model.parameters():
-        reg_loss += torch.norm(param, 1)
-    return lmbda * reg_loss
-
-
 def regularized_train(dataloader, model, loss_fn, optimizer, device, lmbda):
     """
 
