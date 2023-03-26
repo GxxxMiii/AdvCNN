@@ -22,10 +22,10 @@ def regularized_train(dataloader, model, loss_fn, optimizer, device, lmbda):
 
         # Backpropagation and gradient regularization
         optimizer.zero_grad()
+        grad = torch.autograd.grad(loss, X, retain_graph=True)[0]
+        grad_norm = torch.norm(grad)
+        loss += lmbda * grad_norm.mean()
         loss.backward()
-        grad = X.grad
-        grad_norm = torch.norm(grad.view(grad.shape[0], -1), dim=1)
-        loss += lmbda * grad_norm.sum()
         optimizer.step()
 
         if batch % 100 == 0:
@@ -44,7 +44,7 @@ if __name__ == '__main__':
     loss_fn = nn.CrossEntropyLoss()
     optimizer = torch.optim.Adam(regularized_cnn.parameters(), lr=learning_rate)
 
-    lmbda = 10
+    lmbda = 0.5
     epochs = 1
     for t in range(epochs):
         print(f"Epoch {t + 1}\n-------------------------------")
