@@ -77,7 +77,7 @@ if __name__ == '__main__':
 
     print('Defensive Distillation\n')
 
-    learning_rate = 0.001
+    learning_rate = 0.0005
     train_dataloader, test_dataloader, device = init_data()
     teacher_cnn = CNN().to(device)
     distilled_cnn = CNN().to(device)

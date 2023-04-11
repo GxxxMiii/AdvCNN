@@ -35,7 +35,7 @@ if __name__ == '__main__':
     print('true label: ', label)
     pre_label = clean_cnn(torch.tensor(image).to(device))
     print('prediction label: ', np.argmax(pre_label.detach().numpy()))
-    adversarial = attack(inputs=image, labels=label, epsilons=1, max_epsilon=0.1)
+    adversarial = attack(inputs=image, labels=label, epsilons=1, max_epsilon=0.2)
     adv_label = clean_cnn(torch.tensor(adversarial).to(device))
     torch.set_printoptions(precision=4, sci_mode=False)
     softmax = torch.nn.Softmax(dim=1)
@@ -51,6 +51,9 @@ if __name__ == '__main__':
 
     plt.subplot(1, 3, 2)
     perturbation = adversarial - image
+    dist = np.linalg.norm(perturbation)
+    image_d = np.linalg.norm(image)
+    print('dist = ', dist, 'image_d', image_d, 'p', dist/image_d)
     perturbation = perturbation.reshape(28, 28)
     plt.imshow(perturbation, cmap='gray')
 

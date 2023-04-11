@@ -50,6 +50,9 @@ if __name__ == '__main__':
 
     plt.subplot(1, 3, 2)
     perturbation = adversarial - image
+    dist = np.linalg.norm(perturbation)
+    image_d = np.linalg.norm(image)
+    print('dist = ', dist, 'image_d', image_d, 'p', dist / image_d)
     perturbation = perturbation.reshape(28, 28)
     plt.imshow(perturbation, cmap='gray')
 

@@ -23,17 +23,24 @@ if __name__ == '__main__':
 
     distilled_cnn = CNN()
     distilled_cnn.load_state_dict(torch.load("distilled_CNN.pth"))
+    for name, param in distilled_cnn.state_dict().items():
+        print(name)
+        print(type(param), param.size())
 
-    regularized_cnn = CNN()
-    regularized_cnn.load_state_dict(torch.load("regularized_CNN.pth"))
-    print("Load Pytorch Model")
+    # dist_params = np.linalg.norm(distilled_cnn.parameters())
+    # clean_params = np.linalg.norm(clean_cnn.parameters())
+    # print('dist_params:', dist_params)
+    # print('clean_params:', clean_params)
 
-    test(test_dataloader, clean_cnn, loss_fn, device)
-    test(test_dataloader, distilled_cnn, loss_fn, device)
-    test(test_dataloader, regularized_cnn, loss_fn, device)
+    # regularized_cnn = CNN()
+    # regularized_cnn.load_state_dict(torch.load("regularized_CNN.pth"))
+    # print("Load Pytorch Model")
+
+    # test(test_dataloader, clean_cnn, loss_fn, device)
+    # test(test_dataloader, distilled_cnn, loss_fn, device)
+    # test(test_dataloader, regularized_cnn, loss_fn, device)
 
     # show gradients for different digits
     mpl_use('MacOSX')
 
-    
 

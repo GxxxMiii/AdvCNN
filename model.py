@@ -29,20 +29,20 @@ class CNN(nn.Module):
         super(CNN, self).__init__()
         self.conv1 = nn.Sequential(
             nn.Conv2d(in_channels=1, out_channels=32, kernel_size=(5, 5), stride=(1, 1), padding=2),
-            nn.ReLU(),
             nn.BatchNorm2d(num_features=32, eps=1e-4),
+            nn.ReLU(),
             nn.MaxPool2d(kernel_size=2, stride=2)
         )
         self.conv2 = nn.Sequential(
             nn.Conv2d(in_channels=32, out_channels=64, kernel_size=(5, 5), stride=(1, 1), padding=2),
-            nn.ReLU(),
             nn.BatchNorm2d(num_features=64, eps=1e-4),
+            nn.ReLU(),
             nn.MaxPool2d(kernel_size=2, stride=2)
         )
         self.fc = nn.Sequential(
             nn.Linear(7*7*64, 1024),
-            nn.ReLU(),
             nn.BatchNorm1d(1024),
+            nn.ReLU(),
             nn.Dropout()
         )
         self.classifier = nn.Linear(1024, 10)
@@ -119,7 +119,7 @@ def test(dataloader, model, loss_fn, device):
 
 if __name__ == '__main__':
 
-    learning_rate = 0.001
+    learning_rate = 0.0005
     train_dataloader, test_dataloader, device = init_data()
     cnn = CNN().to(device)
     # lenet = LeNet().to(device)
@@ -127,23 +127,23 @@ if __name__ == '__main__':
     loss_fn = nn.CrossEntropyLoss()
     optimizer = torch.optim.Adam(cnn.parameters(), lr=learning_rate)
 
-    # load model
-    clean_cnn = CNN()
+    # # load model
+    # clean_cnn = CNN()
+    # # print(clean_cnn)
+    # clean_cnn.load_state_dict(torch.load("clean_CNN.pth"))
+    # print("Load Pytorch Model from clean_CNN.pth")
     # print(clean_cnn)
-    clean_cnn.load_state_dict(torch.load("clean_CNN.pth"))
-    print("Load Pytorch Model from clean_CNN.pth")
-    print(clean_cnn)
 
-    # epochs = 5
-    # for t in range(epochs):
-    #     print(f"Epoch {t + 1}\n-------------------------------")
-    #     train(train_dataloader, cnn, loss_fn, optimizer, device)
-    #     test(test_dataloader, cnn, loss_fn, device)
-    # print("Done!")
-    #
-    # # save model
-    # torch.save(cnn.state_dict(), "clean_CNN.pth")
-    # print("Saved PyTorch Model State to clean_CNN.pth")
+    epochs = 1
+    for t in range(epochs):
+        print(f"Epoch {t + 1}\n-------------------------------")
+        train(train_dataloader, cnn, loss_fn, optimizer, device)
+        test(test_dataloader, cnn, loss_fn, device)
+    print("Done!")
 
-    test(test_dataloader, clean_cnn, loss_fn, device)
+    # save model
+    torch.save(cnn.state_dict(), "clean_CNN.pth")
+    print("Saved PyTorch Model State to clean_CNN.pth")
+
+    # test(test_dataloader, clean_cnn, loss_fn, device)
     print("Done!")
