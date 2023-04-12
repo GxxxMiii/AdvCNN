@@ -134,16 +134,16 @@ if __name__ == '__main__':
     # print("Load Pytorch Model from clean_CNN.pth")
     # print(clean_cnn)
 
-    epochs = 1
-    for t in range(epochs):
-        print(f"Epoch {t + 1}\n-------------------------------")
-        train(train_dataloader, cnn, loss_fn, optimizer, device)
-        test(test_dataloader, cnn, loss_fn, device)
-    print("Done!")
+    # epochs = 1
+    # for t in range(epochs):
+    #     print(f"Epoch {t + 1}\n-------------------------------")
+    #     train(train_dataloader, cnn, loss_fn, optimizer, device)
+    #     test(test_dataloader, cnn, loss_fn, device)
+    # print("Done!")
 
-    # save model
-    torch.save(cnn.state_dict(), "clean_CNN.pth")
-    print("Saved PyTorch Model State to clean_CNN.pth")
+    # # save model
+    # torch.save(cnn.state_dict(), "clean_CNN.pth")
+    # print("Saved PyTorch Model State to clean_CNN.pth")
 
     # test(test_dataloader, clean_cnn, loss_fn, device)
     print("Done!")

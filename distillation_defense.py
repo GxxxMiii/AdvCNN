@@ -52,7 +52,7 @@ def distill(train_loader, test_loader, model, d_model, epochs,
     test(test_loader, model, loss_fn, device)  # test model at temp=1
     print("Done first training!\n")
     # save intermediate model
-    torch.save(model.state_dict(), "distillation_teacher_CNN.pth")
+    torch.save(model.state_dict(), "models/distillation_teacher_CNN.pth")
     print("Saved PyTorch Distillation Teacher Model State to distillation_teacher_CNN.pth")
     # model = CNN()
     # model.load_state_dict(torch.load("distillation_teacher_CNN.pth"))
@@ -95,7 +95,7 @@ if __name__ == '__main__':
     print("Done!")
 
     # save model
-    torch.save(distilled_cnn.state_dict(), "distilled_CNN.pth")
+    torch.save(distilled_cnn.state_dict(), "models/distilled_CNN.pth")
     print("Saved PyTorch Model State to distilled_CNN.pth")
 
     test(test_dataloader, distilled_cnn, loss_fn, device)

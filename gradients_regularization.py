@@ -54,7 +54,7 @@ if __name__ == '__main__':
     print("Done!")
 
     # save model
-    torch.save(regularized_cnn.state_dict(), "regularized_CNN.pth")
+    torch.save(regularized_cnn.state_dict(), "models/regularized_CNN.pth")
     print("Saved PyTorch Model State to regularized_CNN.pth")
 
     test(test_dataloader, regularized_cnn, loss_fn, device)

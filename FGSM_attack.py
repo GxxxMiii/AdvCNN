@@ -6,7 +6,6 @@ import matplotlib.pyplot as plt
 from matplotlib import use as mpl_use
 from foolbox.models import PyTorchModel
 from foolbox.attacks import GradientSignAttack
-from foolbox.attacks import base
 from foolbox.criteria import Misclassification
 from model import CNN
 
@@ -20,7 +19,7 @@ if __name__ == '__main__':
     # load model
     clean_cnn = CNN().eval()
     # print(clean_cnn)
-    clean_cnn.load_state_dict(torch.load("clean_CNN.pth"))
+    clean_cnn.load_state_dict(torch.load("models/clean_CNN.pth"))
     print("Load Pytorch Model from clean_CNN.pth\n")
 
     # turn into foolbox model
@@ -32,6 +31,8 @@ if __name__ == '__main__':
 
     image, label = foolbox.utils.samples(dataset='mnist', batchsize=1, index=random.randint(0, 20), bounds=(0, 1))
     image = image[np.newaxis, :]
+    print(image.shape)
+    print(label.shape)
     print('true label: ', label)
     pre_label = clean_cnn(torch.tensor(image).to(device))
     print('prediction label: ', np.argmax(pre_label.detach().numpy()))

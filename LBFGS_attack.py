@@ -19,7 +19,7 @@ if __name__ == '__main__':
     # load model
     clean_cnn = CNN().eval()
     # print(clean_cnn)
-    clean_cnn.load_state_dict(torch.load("clean_CNN.pth"))
+    clean_cnn.load_state_dict(torch.load("models/clean_CNN.pth"))
     print("Load Pytorch Model from clean_CNN.pth\n")
 
     # turn into foolbox model
