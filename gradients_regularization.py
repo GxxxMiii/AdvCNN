@@ -44,7 +44,7 @@ if __name__ == '__main__':
     loss_fn = nn.CrossEntropyLoss()
     optimizer = torch.optim.Adam(regularized_cnn.parameters(), lr=learning_rate)
 
-    lmbda = 0.5
+    lmbda = 1
     epochs = 1
     for t in range(epochs):
         print(f"Epoch {t + 1}\n-------------------------------")
