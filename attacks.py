@@ -137,10 +137,10 @@ if __name__ == '__main__':
     print('prediction label: ', np.argmax(pre_label.detach().numpy()))
 
     start_time = time.time()
-    adv = fgsm_attack(model=clean_cnn, image=test_image, label=torch.tensor(test_label), epsilon=epsilon)
+    # adv = fgsm_attack(model=clean_cnn, image=test_image, label=torch.tensor(test_label), epsilon=epsilon)
     # adv = lbfgs_attack(model=clean_cnn, image=test_image, label=torch.tensor(test_label))
     # adv = jsma_attack(model=clean_cnn, image=test_image, label=torch.tensor(test_label))
-    # adv = deepfool_attack(model=clean_cnn, image=test_image, label=torch.tensor(test_label))
+    adv = deepfool_attack(model=clean_cnn, image=test_image, label=torch.tensor(test_label))
     run_time = time.time() - start_time
     adv_label = clean_cnn(adv.reshape(1, 1, 28, 28).to(device))
     torch.set_printoptions(precision=4, sci_mode=False)

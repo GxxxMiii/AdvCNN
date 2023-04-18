@@ -3,7 +3,6 @@
 # Press ⌃R to execute it or replace it with your code.
 # Press Double ⇧ to search everywhere for classes, files, tool windows, actions, and settings.
 import torch
-import torchvision
 import numpy as np
 import matplotlib.pyplot as plt
 from matplotlib import use as mpl_use
@@ -20,28 +19,16 @@ if __name__ == '__main__':
 
     clean_cnn = CNN()
     clean_cnn.load_state_dict(torch.load("models/clean_CNN.pth"))
+    clean_cnn.to(device)
 
     distilled_cnn = CNN()
     distilled_cnn.load_state_dict(torch.load("models/distilled_CNN.pth"))
+    distilled_cnn.to(device)
 
-    regularized_cnn = CNN()
-    regularized_cnn.load_state_dict(torch.load("models/regularized_CNN.pth"))
     print("Load Pytorch Model")
 
-    clean_params = list(clean_cnn.parameters())
-    distilled_params = list(distilled_cnn.parameters())
-    regularized_params = list(distilled_cnn.parameters())
+    test(test_dataloader, clean_cnn, loss_fn, device)
+    test(test_dataloader, distilled_cnn, loss_fn, device)
 
-    dist = 0
-    for i in range(len(clean_params)):
-        dist += np.linalg.norm(clean_params[i].detach().numpy() - distilled_params[i].detach().numpy())
-    print(dist)
-
-    # test(test_dataloader, clean_cnn, loss_fn, device)
-    # test(test_dataloader, distilled_cnn, loss_fn, device)
-    # test(test_dataloader, regularized_cnn, loss_fn, device)
-
-    # show gradients for different digits
-    mpl_use('MacOSX')
 
 

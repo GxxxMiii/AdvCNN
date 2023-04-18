@@ -51,12 +51,6 @@ def distill(train_loader, test_loader, model, d_model, epochs,
     distilled_train(train_loader, model, loss_fn, teacher_optimizer, device, temp)
     test(test_loader, model, loss_fn, device)  # test model at temp=1
     print("Done first training!\n")
-    # save intermediate model
-    torch.save(model.state_dict(), "models/distillation_teacher_CNN.pth")
-    print("Saved PyTorch Distillation Teacher Model State to distillation_teacher_CNN.pth")
-    # model = CNN()
-    # model.load_state_dict(torch.load("distillation_teacher_CNN.pth"))
-    # print("Load Pytorch Model from distillation_teacher_CNN.pth")
 
     # convert label into soft label
     for batch, (X, y) in enumerate(train_loader):
@@ -86,17 +80,17 @@ if __name__ == '__main__':
     teacher_optimizer = torch.optim.Adam(teacher_cnn.parameters(), lr=learning_rate)
     distilled_optimizer = torch.optim.Adam(distilled_cnn.parameters(), lr=learning_rate)
 
-    temp = 20
+    temp = 100
 
-    epochs = 1
+    epochs = 10
     distill(train_loader=train_dataloader, test_loader=test_dataloader, model=teacher_cnn, d_model=distilled_cnn,
             epochs=epochs, loss_fn=loss_fn, teacher_optimizer=teacher_optimizer, distilled_optimizer=distilled_optimizer,
             device=device, temp=temp)
     print("Done!")
 
     # save model
-    torch.save(distilled_cnn.state_dict(), "models/distilled_CNN.pth")
-    print("Saved PyTorch Model State to distilled_CNN.pth")
+    torch.save(distilled_cnn.state_dict(), "models/distilled_T100_CNN.pth")
+    print("Saved PyTorch Model State to models/distilled_T100_CNN.pth")
 
     test(test_dataloader, distilled_cnn, loss_fn, device)
     print("Done!")

@@ -4,10 +4,12 @@ import foolbox
 import numpy as np
 import random
 import matplotlib.pyplot as plt
+import torch
 from torch.utils.data import RandomSampler, DataLoader
 from matplotlib import use as mpl_use
 from attacks import *
 from model import *
+from utils import *
 
 
 def init_eva(d):
@@ -28,14 +30,16 @@ def init_eva(d):
     return eva_dataloader, device
 
 
-def eva_attack(model, attack_flag):
+def eva_attack(model, attack_flag, dir):
     """
 
     :param model: pytorch model
     :param attack_flag: 0 for LBFGS, 1 for FGSM, 2 for JSMA, 3 for Deepfool
+    :param dir: directory to save (str)
     """
 
     torch.set_printoptions(precision=4, sci_mode=False)
+    softmax = torch.nn.Softmax(dim=1)
 
     d = 1000
     success = 0
@@ -44,6 +48,8 @@ def eva_attack(model, attack_flag):
     omega = 0.4
     fgsm_epsilon = 0.3
     eva_dataloader, device = init_eva(d)
+
+    adv_list = []
 
     for batch, (X, y) in enumerate(eva_dataloader):
         start_time = time.time()
@@ -56,7 +62,7 @@ def eva_attack(model, attack_flag):
         elif attack_flag == 3:
             adv = deepfool_attack(model=model, image=X[0], label=y[0])
         else:
-            adv = X[0]
+            adv = None
         run_time = time.time() - start_time
         if adv is not None:
             rho = adv - X
@@ -65,16 +71,16 @@ def eva_attack(model, attack_flag):
                 success += 1
 
                 adv_label = model(adv.reshape(1, 1, 28, 28).to(device))
-                softmax = torch.nn.Softmax(dim=1)
                 confidence += torch.max(softmax(adv_label.detach()))
 
                 cost += run_time
 
-        if (batch+1) % 100 == 0:
-            print(f"success ratio: [{success:>4d}/{d:>4d}]", end='  ')
-            print(f"average confidence: {confidence/success:.4f}")
-            print(f"average computation cost: {cost/success:.4f}")
+                adv_list += (X[0].numpy(), adv.numpy())
 
+        if (batch+1) % 100 == 0:
+            print(f"success ratio: [{success:>4d}/{d:>4d}]")
+
+    np.save(dir, adv_list)
     print()
     print(f"success ratio: ", success/d)
     print(f"average confidence: {confidence / success:.4f}")
@@ -88,7 +94,19 @@ if __name__ == '__main__':
     # load model
     cnn = CNN().eval()
     # print(clean_cnn)
-    cnn.load_state_dict(torch.load("models/regularized_CNN.pth"))
-    print("Load Pytorch Model from regularized_CNN.pth\n")
+    cnn.load_state_dict(torch.load("models/distilled_T100_CNN.pth"))
+    print("Load Pytorch Model from models/distilled_T100_CNN.pth\n")
 
-    eva_attack(model=cnn, attack_flag=1)
+    dir = 'pics/distilled_T100_lbfgs.npy'
+
+    # eva_attack(model=cnn, attack_flag=0, dir=dir)
+
+    print("\nFGSM")
+    eva_attack(model=cnn, attack_flag=1, dir='pics/distilled_T100_fgsm.npy')
+    print("\nLBFGS")
+    eva_attack(model=cnn, attack_flag=0, dir='pics/distilled_T100_lbfgs.npy')
+    print("\nJSMA")
+    eva_attack(model=cnn, attack_flag=2, dir='pics/distilled_T100_jsma.npy')
+    print("\nDeepfool")
+    eva_attack(model=cnn, attack_flag=3, dir='pics/distilled_T100_deepfool.npy')
+

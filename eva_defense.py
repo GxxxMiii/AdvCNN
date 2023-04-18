@@ -24,13 +24,8 @@ if __name__ == '__main__':
     clean_cnn.load_state_dict(torch.load("models/clean_CNN.pth"))
 
     distilled_cnn = CNN()
-    distilled_cnn.load_state_dict(torch.load("models/distilled_CNN.pth"))
-
-    regularized_cnn = CNN()
-    regularized_cnn.load_state_dict(torch.load("models/regularized_CNN.pth"))
-    print("Load Pytorch Model")
+    distilled_cnn.load_state_dict(torch.load("models/distilled_T100_CNN.pth"))
 
     print("Distilled CNN:")
     eva_defense(clean_cnn, distilled_cnn)
-    print("Regularized CNN:")
-    eva_defense(clean_cnn, regularized_cnn)
+
