@@ -94,19 +94,19 @@ if __name__ == '__main__':
     # load model
     cnn = CNN().eval()
     # print(clean_cnn)
-    cnn.load_state_dict(torch.load("models/regularized_L100_CNN.pth"))
-    print("Load Pytorch Model from models/regularized_L100_CNN.pth\n")
+    cnn.load_state_dict(torch.load("models/regularized_L1000_CNN.pth"))
+    print("Load Pytorch Model from models/regularized_L1000_CNN.pth\n")
 
-    dir = 'pics/distilled_T100_lbfgs.npy'
+    dir = 'pics/regularized_L1000_'
 
     # eva_attack(model=cnn, attack_flag=0, dir=dir)
 
     print("\nFGSM")
-    eva_attack(model=cnn, attack_flag=1, dir='pics/regularized_L100_fgsm.npy')
+    eva_attack(model=cnn, attack_flag=1, dir=dir+'fgsm.npy')
     print("\nLBFGS")
-    eva_attack(model=cnn, attack_flag=0, dir='pics/regularized_L100_lbfgs.npy')
+    eva_attack(model=cnn, attack_flag=0, dir=dir+'lbfgs.npy')
     print("\nJSMA")
-    eva_attack(model=cnn, attack_flag=2, dir='pics/regularized_L100_jsma.npy')
+    eva_attack(model=cnn, attack_flag=2, dir=dir+'jsma.npy')
     print("\nDeepfool")
-    eva_attack(model=cnn, attack_flag=3, dir='pics/regularized_L100_deepfool.npy')
+    eva_attack(model=cnn, attack_flag=3, dir=dir+'deepfool.npy')
 

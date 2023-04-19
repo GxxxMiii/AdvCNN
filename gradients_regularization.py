@@ -37,7 +37,7 @@ if __name__ == '__main__':
 
     print('Gradients Regularization\n')
 
-    learning_rate = 0.0001
+    learning_rate = 0.00005
     train_dataloader, test_dataloader, device = init_data()
     regularized_cnn = CNN().to(device)
     regularized_cnn.load_state_dict(torch.load("models/regularized_L1000_CNN.pth"))
