@@ -17,18 +17,16 @@ if __name__ == '__main__':
     train_dataloader, test_dataloader, device = init_data()
     loss_fn = nn.CrossEntropyLoss()
 
-    clean_cnn = CNN()
+    clean_cnn = CNN().to(device)
     clean_cnn.load_state_dict(torch.load("models/clean_CNN.pth"))
-    clean_cnn.to(device)
 
-    distilled_cnn = CNN()
-    distilled_cnn.load_state_dict(torch.load("models/distilled_CNN.pth"))
-    distilled_cnn.to(device)
+    defensed_cnn = CNN().to(device)
+    defensed_cnn.load_state_dict(torch.load("models/regularized_L100_CNN.pth"))
 
     print("Load Pytorch Model")
 
     test(test_dataloader, clean_cnn, loss_fn, device)
-    test(test_dataloader, distilled_cnn, loss_fn, device)
+    test(test_dataloader, defensed_cnn, loss_fn, device)
 
 
 

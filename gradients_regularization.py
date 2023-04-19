@@ -37,15 +37,16 @@ if __name__ == '__main__':
 
     print('Gradients Regularization\n')
 
-    learning_rate = 0.0005
+    learning_rate = 0.0001
     train_dataloader, test_dataloader, device = init_data()
     regularized_cnn = CNN().to(device)
+    regularized_cnn.load_state_dict(torch.load("models/regularized_L1000_CNN.pth"))
 
     loss_fn = nn.CrossEntropyLoss()
     optimizer = torch.optim.Adam(regularized_cnn.parameters(), lr=learning_rate)
 
-    lmbda = 1
-    epochs = 1
+    lmbda = 1000
+    epochs = 10
     for t in range(epochs):
         print(f"Epoch {t + 1}\n-------------------------------")
         regularized_train(dataloader=train_dataloader, model=regularized_cnn, loss_fn=loss_fn, optimizer=optimizer,
@@ -54,8 +55,8 @@ if __name__ == '__main__':
     print("Done!")
 
     # save model
-    torch.save(regularized_cnn.state_dict(), "models/regularized_CNN.pth")
-    print("Saved PyTorch Model State to regularized_CNN.pth")
+    torch.save(regularized_cnn.state_dict(), "models/regularized_L1000_CNN.pth")
+    print("Saved PyTorch Model State to regularized_L1000_CNN.pth")
 
     test(test_dataloader, regularized_cnn, loss_fn, device)
     print("Done!")
